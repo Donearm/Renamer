@@ -193,7 +193,7 @@ def prepend_date(filenames, date_fmt):
         os.rename(files, newname)
 
 
-class RenamerWindow(QtGui.QWidget):
+class RenamerWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
 
@@ -202,9 +202,17 @@ class RenamerWindow(QtGui.QWidget):
         self.setWindowTitle('Renamer')
 
         listwidg = QtGui.QListWidget()
-        listwidg.move(1, 1)
         listwidg.insertItem(1, 'aaa')
         listwidg.insertItem(2, 'bbb')
+
+
+        menubar = QtGui.QMenuBar()
+        options_menu = menubar.addMenu('&Options')
+        options_menu.addAction('Preferences')
+
+
+
+        self.setCentralWidget(listwidg)
 
 
 
