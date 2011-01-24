@@ -76,11 +76,8 @@ def argument_parser():
     (options, args) = arguments.parse_args()
     #print(options)
     #print(args)
+    return options, args
 
-    return options.substitute_spaces, options.append_string, options.prefix_string,\
-            options.remove_string, \
-            options.minimize_extension, options.translate, options.numbering, \
-            options.date_fmt, options.gui_enable, args
 
 def cbk_translate(option, opt_str, value, parser):
     """Callback function for translate"""
@@ -240,10 +237,10 @@ class RenamerWindow(QtGui.QMainWindow):
 
 
 def main():
-    substitute_spaces, append_string, prefix_string, remove_string, minimize_extension, translate, numbering, date_fmt, gui_enable, args = argument_parser()
+    options, args = argument_parser()
 
     # do we want a gui?
-    if gui_enable:
+    if options.gui_enable:
         app = QtGui.QApplication(sys.argv)
 
         w = RenamerWindow()
@@ -253,24 +250,24 @@ def main():
 
     # get all the filenames
     filenames = filelist(args)
-    if substitute_spaces:
+    if options.substitute_spaces:
         sub_spaces(filenames)
-    elif append_string:
-        append_str(filenames, append_string)
-    elif prefix_string:
-        prefix_str(filenames, prefix_string)
-    elif remove_string:
-        remove_str(filenames, remove_string)
-    elif minimize_extension:
+    elif options.append_string:
+        append_str(filenames, options.append_string)
+    elif options.prefix_string:
+        prefix_str(filenames, options.prefix_string)
+    elif options.remove_string:
+        remove_str(filenames, options.remove_string)
+    elif options.minimize_extension:
         minimize_ext(filenames)
-    elif translate:
-        check_length(translate, 2)
-        translate_chars(filenames, translate[0], translate[1])
-    elif numbering:
-        check_length(numbering, 2)
-        idx_numbering(filenames, numbering[0], numbering[1])
-    elif date_fmt:
-        prepend_date(filenames, date_fmt)
+    elif options.translate:
+        check_length(options.translate, 2)
+        translate_chars(filenames, options.translate[0], options.translate[1])
+    elif options.numbering:
+        check_length(options.numbering, 2)
+        idx_numbering(filenames, options.numbering[0], options.numbering[1])
+    elif options.date_fmt:
+        prepend_date(filenames, options.date_fmt)
     else:
         print("What do you want exactly do?")
 
