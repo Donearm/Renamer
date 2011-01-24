@@ -34,10 +34,15 @@ def argument_parser():
             action="store_true",
             dest="substitute_spaces")
     arguments.add_option("-a", "--append",
-            help="Append string to filenames",
+            help="Append string to the end of filenames",
             action="store",
             type="string",
             dest="append_string")
+    arguments.add_option("-p", "--prefix",
+            help="Prefix string to filenames",
+            action="store",
+            type="string",
+            dest="prefix_string")
     arguments.add_option("-r", "--remove",
             help="Remove a string",
             action="store",
@@ -72,7 +77,8 @@ def argument_parser():
     #print(options)
     #print(args)
 
-    return options.substitute_spaces, options.append_string, options.remove_string, \
+    return options.substitute_spaces, options.append_string, options.prefix_string,\
+            options.remove_string, \
             options.minimize_extension, options.translate, options.numbering, \
             options.date_fmt, options.gui_enable, args
 
@@ -136,11 +142,19 @@ def sub_spaces(filenames):
         os.rename(files, newname)
 
 def append_str(filenames, s):
-    """Append given string to all filenames"""
+    """Append given string to the end of all filenames"""
     for files in filenames:
         root = os.path.dirname(files)
         oldname = os.path.basename(files)
         newname = root + '/' + s + oldname
+        os.rename(files, newname)
+
+def prefix_str(filenames, s):
+    """Prefix all filenames with the given string"""
+    for files in filenames:
+        root = os.path.dirname(files)
+        oldname = os.path.basename(files)
+        newname = root + '/' + oldname + s
         os.rename(files, newname)
 
 def remove_str(filenames, s):
@@ -201,24 +215,32 @@ class RenamerWindow(QtGui.QMainWindow):
         self.setGeometry(300, 300, 450, 350)
         self.setWindowTitle('Renamer')
 
-        listwidg = QtGui.QListWidget()
-        listwidg.insertItem(1, 'aaa')
-        listwidg.insertItem(2, 'bbb')
 
+        exit = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
+        exit.setShortcut('Ctrl+Q')
 
-        menubar = QtGui.QMenuBar()
+        preferences = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/categories/preferences-other.png'), 'Preferences', self)
+        preferences.setShortcut('Ctrl+P')
+
+        filedialog = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/fileopen.png'), 'Open File', self)
+        filedialog.setText('Open File')
+        self.connect(filedialog, QtCore.SIGNAL('activated()'), QtCore.SLOT(QtGui.QFileDialog.getOpenFileName("", "*.py", self, "FileDialog")))
+
+        self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+
+        menubar = self.menuBar()
         options_menu = menubar.addMenu('&Options')
-        options_menu.addAction('Preferences')
+        options_menu.addAction(preferences)
+        options_menu.addAction(exit)
 
 
 
-        self.setCentralWidget(listwidg)
 
 
 
 
 def main():
-    substitute_spaces, append_string, remove_string, minimize_extension, translate, numbering, date_fmt, gui_enable, args = argument_parser()
+    substitute_spaces, append_string, prefix_string, remove_string, minimize_extension, translate, numbering, date_fmt, gui_enable, args = argument_parser()
 
     # do we want a gui?
     if gui_enable:
@@ -235,6 +257,8 @@ def main():
         sub_spaces(filenames)
     elif append_string:
         append_str(filenames, append_string)
+    elif prefix_string:
+        prefix_str(filenames, prefix_string)
     elif remove_string:
         remove_str(filenames, remove_string)
     elif minimize_extension:
