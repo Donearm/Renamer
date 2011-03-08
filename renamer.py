@@ -93,9 +93,10 @@ def cbk_translate(option, opt_str, value, parser):
         del parser.rargs[:len(value)]
         setattr(parser.values, option.dest, value)
 
-def check_length(type, length):
-    """Check that the length for the given type is exactly as it should (length)"""
-    if len(type) != length:
+def check_length(typ, length):
+    """Check that the length for the given type is exactly as it should 
+    (length)"""
+    if len(typ) != length:
         raise OptionValueError("You need to give exactly %d arguments" % length)
     else:
         return True
@@ -143,7 +144,7 @@ def append_str(filenames, s):
     for files in filenames:
         root = os.path.dirname(files)
         oldname = os.path.basename(files)
-        newname = root + '/' + s + oldname
+        newname = root + '/' + oldname + s
         os.rename(files, newname)
 
 def prefix_str(filenames, s):
@@ -151,7 +152,7 @@ def prefix_str(filenames, s):
     for files in filenames:
         root = os.path.dirname(files)
         oldname = os.path.basename(files)
-        newname = root + '/' + oldname + s
+        newname = root + '/' + s + oldname
         os.rename(files, newname)
 
 def remove_str(filenames, s):
@@ -176,7 +177,8 @@ def translate_chars(filenames, char_f, char_t):
         os.rename(files, newname)
 
 def idx_numbering(filenames, name, int_start):
-    """Rename every files with the given name and adding a numerations starting at the given number"""
+    """Rename every files with the given name and adding a numerations starting 
+    at the given number"""
     n = int(int_start)
     # filenames must be sorted beforehand
     for files in sorted(filenames):
@@ -213,8 +215,8 @@ class RenamerWindow(QtGui.QMainWindow):
         self.setWindowTitle('Renamer')
 
 
-        exit = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
-        exit.setShortcut('Ctrl+Q')
+        exit_icon = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
+        exit_icon.setShortcut('Ctrl+Q')
 
         preferences = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/categories/preferences-other.png'), 'Preferences', self)
         preferences.setShortcut('Ctrl+P')
@@ -223,12 +225,12 @@ class RenamerWindow(QtGui.QMainWindow):
         filedialog.setText('Open File')
         self.connect(filedialog, QtCore.SIGNAL('activated()'), QtCore.SLOT(QtGui.QFileDialog.getOpenFileName("", "*.py", self, "FileDialog")))
 
-        self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+        self.connect(exit_icon, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
 
         menubar = self.menuBar()
         options_menu = menubar.addMenu('&Options')
         options_menu.addAction(preferences)
-        options_menu.addAction(exit)
+        options_menu.addAction(exit_icon)
 
 
 
