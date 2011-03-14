@@ -136,7 +136,7 @@ def filelist(*args):
 def sub_spaces(filenames):
     """Substitute all spaces in filenames with underscores"""
     for files in filenames:
-        newname = files.translate(bytes.maketrans(b' ', b'_'))
+        newname = re.sub(' ', '_', files)
         os.rename(files, newname)
 
 def append_str(filenames, s):
