@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 ###############################################################################
-# Copyright (c) 2010, Gianluca Fiore
+# Copyright (c) 2010-2011, Gianluca Fiore
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,62 +21,63 @@ import os
 import re
 import sys
 import datetime
-from optparse import OptionParser, OptionValueError
+import argparse
 from PyQt4 import QtGui, QtCore
 
 
 
 def argument_parser():
-    usage = "Usage: %prog [options] paths"
-    arguments = OptionParser(usage=usage, version="%prog 0.1")
-    arguments.add_option("-s", "--no-spaces",
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("-s", "--no-spaces",
             help="substitute spaces",
             action="store_true",
             dest="substitute_spaces")
-    arguments.add_option("-a", "--append",
+    argparser.add_argument("-a", "--append",
             help="Append string to the end of filenames",
             action="store",
-            type="string",
+            type=str,
             dest="append_string")
-    arguments.add_option("-p", "--prefix",
+    argparser.add_argument("-p", "--prefix",
             help="Prefix string to filenames",
             action="store",
-            type="string",
+            type=str,
             dest="prefix_string")
-    arguments.add_option("-r", "--remove",
+    argparser.add_argument("-r", "--remove",
             help="Remove a string",
             action="store",
-            type="string",
+            type=str,
             dest="remove_string")
-    arguments.add_option("-m", "--minimize",
+    argparser.add_argument("-m", "--minimize",
             help="Minimize the extension",
             action="store_true",
             dest="minimize_extension")
-    arguments.add_option("-t", "--translate",
+    argparser.add_argument("-t", "--translate",
             help="Substitute (translate) a series of characters with another",
             action="store",
             dest="translate",
-            type="string",
+            type=str,
             nargs=2)
-    arguments.add_option("-n", "--numbering",
+    argparser.add_argument("-n", "--numbering",
             help="Rename files adding a numeration",
             action="store",
-            type="string",
+            type=str,
             dest="numbering",
             nargs=2)
-    arguments.add_option("-d", "--date",
+    argparser.add_argument("-d", "--date",
             help="Prepend date to files",
             action="store",
-            type="string",
+            type=str,
             dest="date_fmt")
-    arguments.add_option("-g", "--gui",
+    argparser.add_argument("-g", "--gui",
             help="Start the GUI",
             action="store_true",
             dest="gui_enable")
-    (options, args) = arguments.parse_args()
-    #print(options)
-    #print(args)
-    return options, args
+    argparser.add_argument(action="store",
+            help="Files",
+            dest="files",
+            nargs="+")
+    options = argparser.parse_args()
+    return options
 
 
 def cbk_translate(option, opt_str, value, parser):
@@ -97,7 +98,7 @@ def check_length(typ, length):
     """Check that the length for the given type is exactly as it should 
     (length)"""
     if len(typ) != length:
-        raise OptionValueError("You need to give exactly %d arguments" % length)
+        raise argparse.ArgumentError("You need to give exactly %d arguments" % length)
     else:
         return True
 
@@ -239,7 +240,7 @@ class RenamerWindow(QtGui.QMainWindow):
 
 
 def main():
-    options, args = argument_parser()
+    options = argument_parser()
 
     # do we want a gui?
     if options.gui_enable:
@@ -251,7 +252,7 @@ def main():
         return
 
     # get all the filenames
-    filenames = filelist(args)
+    filenames = filelist(options.files)
     if options.substitute_spaces:
         sub_spaces(filenames)
     elif options.append_string:
