@@ -160,8 +160,19 @@ def remove_str(filenames, s):
     """Remove a given string from all filenames"""
     for files in filenames:
         root = os.path.dirname(files)
-        newname = root + '/' + os.path.basename(files).replace(s, '')
-        os.rename(files, newname)
+        oldname = os.path.basename(files)
+        if re.search(s, oldname):
+            # it's a regexp
+            newname = root + '/' + re.sub(s, '', oldname)
+        else:
+            # not a regexp, simple replace
+            newname = root + '/' + oldname.replace(s, '')
+        try:
+            os.rename(files, newname)
+        except OSError:
+            # it's possible that the regexp might trying to cancel all the
+            # characters in filename. Skip that file
+            continue
 
 def minimize_ext(filenames):
     """Minimize all file extensions of given files"""
