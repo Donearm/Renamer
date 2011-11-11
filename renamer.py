@@ -191,7 +191,11 @@ def translate_chars(filenames, char_f, char_t):
 def idx_numbering(filenames, name, int_start):
     """Rename every files with the given name and adding a numerations starting 
     at the given number"""
-    n = int(int_start)
+    try:
+        n = int(int_start)
+    except ValueError:
+        # perhaps we forgot to give the int to start numbering, defaulting to 1
+        n = 1
     # filenames must be sorted beforehand
     for files in sorted(filenames):
         root = os.path.dirname(files)
