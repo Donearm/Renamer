@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 ###############################################################################
@@ -222,31 +222,31 @@ def prepend_date(filenames, date_fmt):
         os.rename(files, newname)
 
 
-#class RenamerWindow(QtGui.QMainWindow):
-#    def __init__(self, parent=None):
-#        QtGui.QWidget.__init__(self, parent)
-#
-#
-#        self.setGeometry(300, 300, 450, 350)
-#        self.setWindowTitle('Renamer')
-#
-#
-#        exit_icon = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
-#        exit_icon.setShortcut('Ctrl+Q')
-#
-#        preferences = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/categories/preferences-other.png'), 'Preferences', self)
-#        preferences.setShortcut('Ctrl+P')
-#
-#        filedialog = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/fileopen.png'), 'Open File', self)
-#        filedialog.setText('Open File')
-#        self.connect(filedialog, QtCore.SIGNAL('activated()'), QtCore.SLOT(QtGui.QFileDialog.getOpenFileName("", "*.py", self, "FileDialog")))
-#
-#        self.connect(exit_icon, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
-#
-#        menubar = self.menuBar()
-#        options_menu = menubar.addMenu('&Options')
-#        options_menu.addAction(preferences)
-#        options_menu.addAction(exit_icon)
+class RenamerWindow(QtGui.QMainWindow):
+    def __init__(self, parent=None):
+        QtGui.QWidget.__init__(self, parent)
+
+
+        self.setGeometry(300, 300, 450, 350)
+        self.setWindowTitle('Renamer')
+
+
+        exit_icon = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
+        exit_icon.setShortcut('Ctrl+Q')
+
+        preferences = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/categories/preferences-other.png'), 'Preferences', self)
+        preferences.setShortcut('Ctrl+P')
+
+        filedialog = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/fileopen.png'), 'Open File', self)
+        filedialog.setText('Open File')
+        self.connect(filedialog, QtCore.SIGNAL('activated()'), QtCore.SLOT(QtGui.QFileDialog.getOpenFileName("", "*.py", self, "FileDialog")))
+
+        self.connect(exit_icon, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+
+        menubar = self.menuBar()
+        options_menu = menubar.addMenu('&Options')
+        options_menu.addAction(preferences)
+        options_menu.addAction(exit_icon)
 
 
 
@@ -261,15 +261,15 @@ def main():
     if options.gui_enable:
         try:
             from PyQt4 import QtGui, QtCore
-        except:
-            sys.exit(1)
-
             app = QtGui.QApplication(sys.argv)
 
             w = RenamerWindow()
             w.show()
             app.exec_()
             return
+        except:
+            sys.exit(1)
+
 
     # get all the filenames
     filenames = filelist(options.files)
