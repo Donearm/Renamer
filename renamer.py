@@ -243,10 +243,12 @@ class RenamerWindow(QtGui.QMainWindow):
 
         self.connect(exit_icon, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
 
-        menubar = self.menuBar()
-        options_menu = menubar.addMenu('&Options')
-        options_menu.addAction(preferences)
-        options_menu.addAction(exit_icon)
+        self.menubar = self.menuBar()
+        self.options_menu = menubar.addMenu('&Options')
+        self.options_menu.addAction(preferences)
+        self.options_menu.addAction(exit_icon)
+
+
 
 
 
