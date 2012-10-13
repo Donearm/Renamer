@@ -14,7 +14,7 @@
 __author__ = "Gianluca Fiore"
 __license__ = "GPL"
 __version__ = "0.2"
-__date__ = "18/11/2010"
+__date__ = "13/10/2012"
 __email__ = "forod.g@gmail.com"
 
 import os
@@ -22,6 +22,7 @@ import re
 import sys
 import datetime
 import argparse
+from PyQt4 import QtGui, QtCore
 
 
 
@@ -261,16 +262,12 @@ def main():
 
     # do we want a gui?
     if options.gui_enable:
-        try:
-            from PyQt4 import QtGui, QtCore
-            app = QtGui.QApplication(sys.argv)
+        app = QtGui.QApplication(sys.argv)
 
-            w = RenamerWindow()
-            w.show()
-            app.exec_()
-            return
-        except:
-            sys.exit(1)
+        w = RenamerWindow()
+        w.show()
+        app.exec_()
+        return
 
 
     # get all the filenames
