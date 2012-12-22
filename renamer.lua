@@ -5,6 +5,18 @@
 -- @copyright 2012, Gianluca Fiore <forod.g@gmail.com>
 --
 
+function print_help()
+	print("Wrong number of arguments\n")
+	print("USAGE:\n")
+	print("\trename.lua [-h][-s][-a APPEND_STRING][-p PREFIX_STRING]\n")
+	print("\t           [-r REMOVE_STRING][-m][-t TRANSLATE_FROM TRANSLATE_TO]\n")
+	print("\t           [-n NAME NUMBERING][-d DATE_FMT] files [files ...]")
+end
+
+function argparse()
+end
+
+
 ---Check that the length for the given type is exactly as it should
 --@param typ the type
 --@param length the desired minimum length
