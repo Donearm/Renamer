@@ -46,7 +46,28 @@ function cli_parse(...)
 		local a = arg[i]
 		if a:match("^%-h") then
 			print_help()
-			return
+			os.exit(0)
+		elseif a:match ("^%-(.*)") then
+			if a:match("^%-s") then
+				print("Substituting spaces")
+			elseif a:match("^%-m") then
+				print("Minimize the extension")
+			elseif a:match("^%-a") then
+				print("Append string")
+			elseif a:match("^%-p") then
+				print("Prefix string")
+			elseif a:match("^%-r") then
+				print("Remove string")
+			elseif a:match("^%-t") then
+				print("Translate")
+			elseif a:match("^%-n") then
+				print("Numbering")
+			elseif a:match("^%-d") then
+				print("Add date")
+			else
+				print_help()
+				os.exit(1)
+			end
 		else
 			print(a)
 		end
@@ -57,7 +78,12 @@ end
 --@param typ the type
 --@param length the desired minimum length
 function check_length(typ, length)
-
+	if #typ < length then
+		print("Wrong number of arguments, you need to give at least " .. length .. " arguments")
+		os.exit(1)
+	else
+		return true
+	end
 end
 
 ---Check if a string is a valid path
@@ -123,6 +149,7 @@ end
 
 function main()
 	cli_parse(arg)
+	check_length(arg, 3)
 end
 
 main()
