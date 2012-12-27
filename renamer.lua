@@ -42,6 +42,7 @@ end
 
 function cli_parse(...)
 	local args = ...
+	local files = {}
 	for i = #args, 1, -1 do
 		local a = arg[i]
 		if a:match("^%-h") then
@@ -68,10 +69,14 @@ function cli_parse(...)
 				print_help()
 				os.exit(1)
 			end
+		elseif a:match("^([^-][%w_%p]+)") then
+			print("Insert into table")
+			table.insert(files, a)
 		else
 			print(a)
 		end
 	end
+	return files
 end
 
 ---Check that the length for the given type is exactly as it should
@@ -156,7 +161,7 @@ function prepend_date(filenames, date_fmt)
 end
 
 function main()
-	cli_parse(arg)
+	local f = cli_parse(arg)
 end
 
 main()
