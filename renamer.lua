@@ -89,6 +89,14 @@ end
 ---Check if a string is a valid path
 --@param path the string to check
 function ispath(path)
+	-- try to rename path to itself; if it works, the original path 
+	-- existed
+	local s = os.rename(path, path)
+	if s == true then
+		return true
+	else
+		return false
+	end
 end
 
 ---Given either a valid path or a number of files (or a mix of both), 
@@ -149,7 +157,6 @@ end
 
 function main()
 	cli_parse(arg)
-	check_length(arg, 3)
 end
 
 main()
