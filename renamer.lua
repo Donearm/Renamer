@@ -6,7 +6,7 @@
 --
 
 function print_help()
-	print("Wrong number of arguments\n")
+	print("Wrong arguments\n")
 	print("USAGE:\n")
 	print("\trename.lua [-h][-s][-a APPEND_STRING][-p PREFIX_STRING]\n")
 	print("\t           [-r REMOVE_STRING][-m][-t TRANSLATE_FROM TRANSLATE_TO]\n")
@@ -36,9 +36,22 @@ function parse_flags(...)
 			table.remove(args, i)
 		end
 	end
-	return flags, unpack(args)
+--	return flags, unpack(args)
+	return flags, args
 end
 
+function cli_parse(...)
+	local args = ...
+	for i = #args, 1, -1 do
+		local a = arg[i]
+		if a:match("^%-h") then
+			print_help()
+			return
+		else
+			print(a)
+		end
+	end
+end
 
 ---Check that the length for the given type is exactly as it should
 --@param typ the type
@@ -107,3 +120,9 @@ end
 --@param date_fmt the format of the date
 function prepend_date(filenames, date_fmt)
 end
+
+function main()
+	cli_parse(arg)
+end
+
+main()
