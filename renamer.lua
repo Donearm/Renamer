@@ -185,6 +185,11 @@ end
 --@param filenames the files
 --@param s the string to remove
 function remove_str(filenames, s)
+	for _, f in pairs(filenames) do
+		local newname = dirname(f) .. string.gsub(basename(f), s, '')
+		local t, err = os.rename(f, newname)
+	end
+	return t, err
 end
 
 ---Minimize the extension of given files
