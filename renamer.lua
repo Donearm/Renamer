@@ -5,6 +5,8 @@
 -- @copyright 2012, Gianluca Fiore <forod.g@gmail.com>
 --
 
+local lfs = require("lfs")
+
 function print_help()
 	print("Wrong arguments\n")
 	print("USAGE:\n")
@@ -109,6 +111,28 @@ end
 --files as arguments
 --@param ... the path(s) and/or file(s)
 function filelist(...)
+	local path = ...
+	local files = {}
+	for _,e in pairs(path) do
+		::continue::
+		if lfs.attributes(e, "mode") == "file" then
+			table.insert(files, e)
+		elseif lfs.attributes(e, "mode") == "directory" then
+			for l in lfs.dir(e) do
+				if l ~= "." and f ~= ".." then
+					local filename = e .. l
+					local attr = lfs.attributes(filename)
+					if attr.mode == "file" then
+						table.insert(files, filename)
+					end
+				end
+			end
+		else
+			-- neither a file nor a directory? Skip it
+			goto continue
+		end
+	end
+	return files
 end
 
 ---Substitute all spaces in filename(s) with underscores
@@ -162,6 +186,10 @@ end
 
 function main()
 	local f = cli_parse(arg)
+	local fil = filelist(f)
+	for _,n in pairs(fil) do
+		print(n)
+	end
 end
 
 main()
