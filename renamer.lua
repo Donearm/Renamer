@@ -149,6 +149,11 @@ end
 --@param filenames the files
 --@param s the string to append
 function append_str(filenames, s)
+	for _, f in pairs(filenames) do
+		local newname = f .. s
+		local t, err = os.rename(f, newname)
+	end
+	return t, err
 end
 
 ---Prefix all given filenames with a string
@@ -192,7 +197,6 @@ end
 function main()
 	local f = cli_parse(arg)
 	local fil = filelist(f)
---	local result, err = sub_spaces(fil)
 end
 
 main()
