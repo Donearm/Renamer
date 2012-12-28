@@ -93,6 +93,20 @@ function check_length(typ, length)
 	end
 end
 
+---Extract only the file name from a path string
+--@param str the path
+function basename(str)
+	local name = string.gsub(str, "(.*/)(.*)", "%2")
+	return name
+end
+
+---Extract only the directory name from a path string
+--@param str the path
+function dirname(str)
+	local name = string.gsub(str, "(.*/)(.*)", "%1")
+	return name
+end
+
 ---Check if a string is a valid path
 --@param path the string to check
 function ispath(path)
@@ -160,6 +174,11 @@ end
 --@param filenames the files
 --@param s the string to prefix
 function prefix_str(filenames, s)
+	for _, f in pairs(filenames) do
+		local newname = dirname(f) .. s .. basename(f)
+		local t, err = os.rename(f, newname)
+	end
+	return t, err
 end
 
 ---Remove a string from all given filenames
