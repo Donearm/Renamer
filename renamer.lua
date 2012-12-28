@@ -136,8 +136,13 @@ function filelist(...)
 end
 
 ---Substitute all spaces in filename(s) with underscores
---@param filenames the files
+--@param filenames a table with the file names
 function sub_spaces(filenames)
+	for _, f in pairs(filenames) do
+		local newname = string.gsub(f, "\\?%s", '_')
+		local t, err = os.rename(f, newname)
+	end
+	return t, err
 end
 
 ---Append a string to the end of all filenames given
@@ -187,9 +192,7 @@ end
 function main()
 	local f = cli_parse(arg)
 	local fil = filelist(f)
-	for _,n in pairs(fil) do
-		print(n)
-	end
+--	local result, err = sub_spaces(fil)
 end
 
 main()
