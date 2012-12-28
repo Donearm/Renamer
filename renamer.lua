@@ -8,9 +8,9 @@
 function print_help()
 	print("Wrong arguments\n")
 	print("USAGE:\n")
-	print("\trename.lua [-h][-s][-a APPEND_STRING][-p PREFIX_STRING]\n")
-	print("\t           [-r REMOVE_STRING][-m][-t TRANSLATE_FROM TRANSLATE_TO]\n")
-	print("\t           [-n NAME NUMBERING][-d DATE_FMT] files [files ...]")
+	print("\trename.lua [-h][-s|--substitute][-a|--append APPEND_STRING][-p|--prefix PREFIX_STRING]\n")
+	print("\t           [-r|--remove REMOVE_STRING][-m|--minimize][-t|--translate TRANSLATE_FROM TRANSLATE_TO]\n")
+	print("\t           [-n|--numbering NAME NUMBERING][-d|--date DATE_FMT] files [files ...]")
 end
 
 --- Extract flags from an arguments list.
@@ -48,22 +48,22 @@ function cli_parse(...)
 		if a:match("^%-h") then
 			print_help()
 			os.exit(0)
-		elseif a:match ("^%-(.*)") then
-			if a:match("^%-s") then
+		elseif a:match ("^[-]+(.*)") then
+			if a:match("^%-s") or a:match("^[-]+substitute") then
 				print("Substituting spaces")
-			elseif a:match("^%-m") then
+			elseif a:match("^%-m") or a:match("^[-]+minimize") then
 				print("Minimize the extension")
-			elseif a:match("^%-a") then
+			elseif a:match("^%-a") or a:match("^[-]+append") then
 				print("Append string")
-			elseif a:match("^%-p") then
+			elseif a:match("^%-p") or a:match("^[-]+prefix") then
 				print("Prefix string")
-			elseif a:match("^%-r") then
+			elseif a:match("^%-r") or a:match("^[-]+remove") then
 				print("Remove string")
-			elseif a:match("^%-t") then
+			elseif a:match("^%-t") or a:match("^[-]+translate") then
 				print("Translate")
-			elseif a:match("^%-n") then
+			elseif a:match("^%-n") or a:match("^[-]+numbering") then
 				print("Numbering")
-			elseif a:match("^%-d") then
+			elseif a:match("^%-d") or a:match("^[-]+date") then
 				print("Add date")
 			else
 				print_help()
