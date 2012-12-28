@@ -218,6 +218,28 @@ end
 --@param char_f the characters to translate
 --@param char_t the characters to translate to
 function translate_chars(filenames, char_f, char_t)
+	-- have 2 tables to contain each characters in char_f and char_t
+	local from_table = {}
+	local to_table = {}
+	for _, f in pairs(filenames) do
+		local oldname = basename(f) -- save original name
+		local newname = oldname -- newname is oldname at the beginning
+		-- insert every char in char_f and char_t in corresponding 
+		-- tables
+		for c in string.gmatch(char_f, ".") do
+			table.insert(from_table, c)
+		end
+		for c in string.gmatch(char_t, ".") do
+			table.insert(to_table, c)
+		end
+		-- iterate over every from_table item and substitute it with the 
+		-- same positioned ones in to_table
+		for i = 1, #from_table, 1 do
+			newname = string.gsub(newname, from_table[i], to_table[i])
+		end
+		local t, err = os.rename(f, dirname(f) .. newname)
+	end
+	return t, err
 end
 
 ---Rename files with a fixed name and a numbering starting at a given 
