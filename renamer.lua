@@ -111,8 +111,10 @@ end
 --path and the extension (period included)
 --@param str the path
 function get_extension(str)
-	local name = string.gsub(str, "(.*/)(.*)([.].*)$", "%1%2")
-	local ext = string.gsub(str, "(.*/)(.*)([.].*)$", "%3")
+	--TODO: need to prevent ext matching whole filenames when there's 
+	--not an extension
+	local name = string.gsub(str, "(.-/)(.-)([.].*)$", "%1%2")
+	local ext = string.gsub(str, "(.-/)(.-)([.].*)$", "%3")
 
 	return name, ext
 end
@@ -248,6 +250,23 @@ end
 --@param name the string for the new filename
 --@param start the integer from which to start the numbering
 function idx_numbering(filenames, name, start)
+	local idx = start
+	for _, f in pairs(filenames) do
+		local root = dirname(f)
+		local oldname, ext = get_extension(f)
+		-- prefix enough 0s if the number is not already at least 3 digits 
+		-- long
+		if idx < 10 then
+			idx = '00' .. idx
+		elseif idx >= 10 and idx < 100 then
+			idx = '0' .. idx
+		else
+			idx = idx
+		end
+		local newname = root .. name .. idx .. ext
+		local t, err = os.rename(f, newname)
+		idx = idx + 1
+	end
 end
 
 ---Prepend each file with the current or an arbitrary date
