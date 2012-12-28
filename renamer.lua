@@ -107,6 +107,16 @@ function dirname(str)
 	return name
 end
 
+---Extract only the file extension from a path string. Returns the full
+--path and the extension (period included)
+--@param str the path
+function get_extension(str)
+	local name = string.gsub(str, "(.*/)(.*)([.].*)$", "%1%2")
+	local ext = string.gsub(str, "(.*/)(.*)([.].*)$", "%3")
+
+	return name, ext
+end
+
 ---Check if a string is a valid path
 --@param path the string to check
 function ispath(path)
@@ -195,6 +205,12 @@ end
 ---Minimize the extension of given files
 --@param filenames the files
 function minimize_ext(filenames)
+	for _, f in pairs(filenames) do
+		local n, e = get_extension(f)
+		local newname = n .. string.lower(e)
+		local t, err = os.rename(f, newname)
+	end
+	return t, err
 end
 
 ---Translate a list of characters to another in the given filenames
