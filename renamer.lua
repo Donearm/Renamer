@@ -161,6 +161,31 @@ function filelist(...)
 	return files
 end
 
+---Transform user numerical or alphabetical input in a meaningful date 
+--string
+--@param input the user input, a string
+function dateize(input)
+	if type(input) == "string" then
+		if input == "today" then
+			local date = os.date("%Y-%m-%d")
+			return date
+		elseif input == "yesterday" then
+			local date = os.date("%Y-%m-%d", os.time()-24*60*60)
+			return date
+		elseif input == "tomorrow" then
+			local date = os.date("%Y-%m-%d", os.time()+24*60*60)
+			return date
+		else
+			print("This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow'")
+			os.exit(1)
+		end
+	else
+		-- nothing to do, yet
+		print("This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow'")
+		os.exit(1)
+	end
+end
+
 ---Substitute all spaces in filename(s) with underscores
 --@param filenames a table with the file names
 function sub_spaces(filenames)
@@ -273,7 +298,15 @@ end
 --@param filenames the files
 --@param date_fmt the format of the date
 function prepend_date(filenames, date_fmt)
+	local d = dateize(date_fmt)
+	for _,f in pairs(filenames) do
+		local root = dirname(f)
+		local newname = root .. d .. basename(f)
+		local t, err = os.rename(f, newname)
+	end
+	return t, err
 end
+
 
 function main()
 	local f = cli_parse(arg)
