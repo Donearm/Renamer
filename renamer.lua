@@ -246,9 +246,8 @@ end
 function sub_spaces(filenames)
 	for _, f in pairs(filenames) do
 		local newname = string.gsub(f, "\\?%s", '_')
-		local t, err = os.rename(f, newname)
+		os.rename(f, newname)
 	end
-	return t, err
 end
 
 ---Append a string to the end of all filenames given
@@ -258,9 +257,8 @@ function append_str(filenames, s)
 	local s = tostring(s) -- make sure s is a string
 	for _, f in pairs(filenames) do
 		local newname = f .. s
-		local t, err = os.rename(f, newname)
+		os.rename(f, newname)
 	end
-	return t, err
 end
 
 ---Prefix all given filenames with a string
@@ -270,9 +268,8 @@ function prefix_str(filenames, s)
 	local s = tostring(s) -- make sure s is a string
 	for _, f in pairs(filenames) do
 		local newname = dirname(f) .. s .. basename(f)
-		local t, err = os.rename(f, newname)
+		os.rename(f, newname)
 	end
-	return t, err
 end
 
 ---Remove a string from all given filenames
@@ -282,9 +279,8 @@ function remove_str(filenames, s)
 	local s = tostring(s) -- make sure s is a string
 	for _, f in pairs(filenames) do
 		local newname = dirname(f) .. string.gsub(basename(f), s, '')
-		local t, err = os.rename(f, newname)
+		os.rename(f, newname)
 	end
-	return t, err
 end
 
 ---Minimize the extension of given files
@@ -293,9 +289,8 @@ function minimize_ext(filenames)
 	for _, f in pairs(filenames) do
 		local n, e = get_extension(f)
 		local newname = n .. string.lower(e)
-		local t, err = os.rename(f, newname)
+		os.rename(f, newname)
 	end
-	return t, err
 end
 
 ---Translate a list of characters to another in the given filenames
@@ -328,9 +323,8 @@ function translate_chars(filenames, char_f, char_t)
 		for i = 1, #from_table, 1 do
 			newname = string.gsub(newname, from_table[i], to_table[i])
 		end
-		local t, err = os.rename(f, dirname(f) .. newname)
+		os.rename(f, dirname(f) .. newname)
 	end
-	return t, err
 end
 
 ---Rename files with a fixed name and a numbering starting at a given 
@@ -353,7 +347,7 @@ function idx_numbering(filenames, name, start)
 			idx = idx
 		end
 		local newname = root .. name .. idx .. ext
-		local t, err = os.rename(f, newname)
+		os.rename(f, newname)
 		idx = idx + 1
 	end
 end
@@ -366,9 +360,8 @@ function prepend_date(filenames, date_fmt)
 	for _,f in pairs(filenames) do
 		local root = dirname(f)
 		local newname = root .. d .. basename(f)
-		local t, err = os.rename(f, newname)
+		os.rename(f, newname)
 	end
-	return t, err
 end
 
 
