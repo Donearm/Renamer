@@ -10,11 +10,26 @@ local lfs = require("lfs")
 local _O = {}
 
 function print_help()
-	print("Wrong arguments\n")
-	print("USAGE:\n")
-	print("\trename.lua [-h][-s|--substitute][-a|--append APPEND_STRING][-p|--prefix PREFIX_STRING]\n")
-	print("\t           [-r|--remove REMOVE_STRING][-m|--minimize][-t|--translate TRANSLATE_FROM TRANSLATE_TO]\n")
-	print("\t           [-n|--numbering NAME NUMBERING][-d|--date DATE_FMT] [-D|--no-dashes] files [files ...]")
+	print([[Wrong arguments
+
+USAGE:
+	rename.lua [-h][-s|--substitute][-a|--append APPEND_STRING][-p|--prefix PREFIX_STRING]
+		[-r|--remove REMOVE_STRING][-m|--minimize][-t|--translate TRANSLATE_FROM TRANSLATE_TO]
+		[-n|--numbering NAME NUMBERING][-d|--date DATE_FMT][-D|--no-dashes] 
+		files|directory [files|directories ...]
+
+Arguments:
+	-h					this help
+	-s, --substitute			substitute spaces with underscores
+	-a, --append				append a string to filenames
+	-p, --prefix				prefix a string to filenames
+	-r, --remove <string>			remove <string> from filenames
+	-m, --minimize				minimize extensions from filenames
+	-t, --translate <from> <to>		translate all <from> characters to <to> characters in filenames
+	-n, --numbering <name> <numbering>	rename all filenames as <name> with a progressive numeration starting at <numbering>
+	-d, --date				add a date to the beginning of filenames (use [today|yesterday|tomorrow|number])
+	-D, --no-dashes				strip dashes from dates. Only meaningful with -d, --date
+		]])
 end
 
 function print_date_help()
@@ -93,7 +108,6 @@ function cli_parse(...)
 				os.exit(1)
 			end
 		elseif a:match("^([^-][%w_%p]+)") then
-			print("Insert into table")
 			table.insert(files, a)
 		else
 			print(a)
