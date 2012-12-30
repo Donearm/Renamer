@@ -7,12 +7,14 @@
 
 local lfs = require("lfs")
 
+local _O = {}
+
 function print_help()
 	print("Wrong arguments\n")
 	print("USAGE:\n")
 	print("\trename.lua [-h][-s|--substitute][-a|--append APPEND_STRING][-p|--prefix PREFIX_STRING]\n")
 	print("\t           [-r|--remove REMOVE_STRING][-m|--minimize][-t|--translate TRANSLATE_FROM TRANSLATE_TO]\n")
-	print("\t           [-n|--numbering NAME NUMBERING][-d|--date DATE_FMT] files [files ...]")
+	print("\t           [-n|--numbering NAME NUMBERING][-d|--date DATE_FMT] [-D|--no-dashes] files [files ...]")
 end
 
 --- Extract flags from an arguments list.
@@ -67,6 +69,9 @@ function cli_parse(...)
 				print("Numbering")
 			elseif a:match("^%-d") or a:match("^[-]+date") then
 				print("Add date")
+			elseif a:match("^%-D") or a:match("^[-]+no[-]dashes") then
+				_O.dashes = false
+				print("No dashes")
 			else
 				print_help()
 				os.exit(1)
@@ -169,19 +174,16 @@ end
 --string
 --@param input the user input, a string
 function dateize(input)
+	local date = ''
 	if type(input) == "string" then
 		if input == "today" then
-			local date = os.date("%Y-%m-%d")
-			return date
+			date = os.date("%Y-%m-%d")
 		elseif input == "yesterday" then
-			local date = os.date("%Y-%m-%d", os.time()-24*60*60)
-			return date
+			date = os.date("%Y-%m-%d", os.time()-24*60*60)
 		elseif input == "tomorrow" then
-			local date = os.date("%Y-%m-%d", os.time()+24*60*60)
-			return date
+			date = os.date("%Y-%m-%d", os.time()+24*60*60)
 		elseif string.match(input, "%d+%-%d+%-%d+") then
-			local date = input
-			return date
+			date = input
 		else
 			print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
 			os.exit(1)
@@ -191,6 +193,12 @@ function dateize(input)
 		print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
 		os.exit(1)
 	end
+	-- check if the no-dashes cli options has been used
+	if _O.dashes == false then
+		-- remove dashes from the date string
+		date = string.gsub(date, "[-]+", '')
+	end
+	return date
 end
 
 ---Substitute all spaces in filename(s) with underscores
