@@ -17,6 +17,21 @@ function print_help()
 	print("\t           [-n|--numbering NAME NUMBERING][-d|--date DATE_FMT] [-D|--no-dashes] files [files ...]")
 end
 
+function print_date_help()
+	print([[Incorrect/missing arguments
+
+USAGE
+	today			for today's date
+	yesterday		for yesterday's date
+	tomorrow		for tomorrow's date
+	year-month-day		for the exact date (as in '2012-10-01')
+	a single number		for a specific date of current the month ('20' will become '2012-10-20'),
+				or only the year as it is (if the number is biggest than 31, which is always
+				considered a day then)
+
+all dates will be in the "yyyy-mm-dd" format unless the -D or --no-dashes options was given; in this case, dashes are removed]])
+end
+
 
 --- Extract flags from an arguments list.
 -- Given string arguments, extract flag arguments into a flags set.
@@ -186,7 +201,7 @@ function dateize(input)
 		elseif string.match(input, "%d+%-%d+%-%d+") then
 			date = input
 		else
-			print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
+			print_date_help()
 			os.exit(1)
 		end
 	else
@@ -200,7 +215,7 @@ function dateize(input)
 			date = input
 		else
 			-- nothing to do, yet
-			print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
+			print_date_help()
 			os.exit(1)
 		end
 	end
