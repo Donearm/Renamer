@@ -255,6 +255,7 @@ end
 --@param filenames the files
 --@param s the string to append
 function append_str(filenames, s)
+	local s = tostring(s) -- make sure s is a string
 	for _, f in pairs(filenames) do
 		local newname = f .. s
 		local t, err = os.rename(f, newname)
@@ -266,6 +267,7 @@ end
 --@param filenames the files
 --@param s the string to prefix
 function prefix_str(filenames, s)
+	local s = tostring(s) -- make sure s is a string
 	for _, f in pairs(filenames) do
 		local newname = dirname(f) .. s .. basename(f)
 		local t, err = os.rename(f, newname)
@@ -277,6 +279,7 @@ end
 --@param filenames the files
 --@param s the string to remove
 function remove_str(filenames, s)
+	local s = tostring(s) -- make sure s is a string
 	for _, f in pairs(filenames) do
 		local newname = dirname(f) .. string.gsub(basename(f), s, '')
 		local t, err = os.rename(f, newname)
@@ -303,6 +306,9 @@ function translate_chars(filenames, char_f, char_t)
 	-- have 2 tables to contain each characters in char_f and char_t
 	local from_table = {}
 	local to_table = {}
+	-- make sure characters are strings
+	local char_f = tostring(char_f)
+	local char_t = tostring(char_t)
 	-- limit char_f to the length of char_t. The opposite is already 
 	-- done automatically by the lua interpreter
 	local correct_char_f = string.sub(char_f, 1, #char_t)
