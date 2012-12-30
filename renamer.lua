@@ -85,24 +85,23 @@ function cli_parse(...)
 			os.exit(0)
 		elseif a:match ("^[-]+(.*)") then
 			if a:match("^%-s") or a:match("^[-]+substitute") then
-				print("Substituting spaces")
+				_O.substitute = true
 			elseif a:match("^%-m") or a:match("^[-]+minimize") then
-				print("Minimize the extension")
+				_O.minimize = true
 			elseif a:match("^%-a") or a:match("^[-]+append") then
-				print("Append string")
+				_O.append = true
 			elseif a:match("^%-p") or a:match("^[-]+prefix") then
-				print("Prefix string")
+				_O.prefix = true
 			elseif a:match("^%-r") or a:match("^[-]+remove") then
-				print("Remove string")
+				_O.remove = true
 			elseif a:match("^%-t") or a:match("^[-]+translate") then
-				print("Translate")
+				_O.translate = true
 			elseif a:match("^%-n") or a:match("^[-]+numbering") then
-				print("Numbering")
+				_O.numbering = true
 			elseif a:match("^%-d") or a:match("^[-]+date") then
-				print("Add date")
+				_O.date = true
 			elseif a:match("^%-D") or a:match("^[-]+no[-]dashes") then
 				_O.dashes = false
-				print("No dashes")
 			else
 				print_help()
 				os.exit(1)
@@ -110,7 +109,8 @@ function cli_parse(...)
 		elseif a:match("^([^-][%w_%p]+)") then
 			table.insert(files, a)
 		else
-			print(a)
+			print_help()
+			os.exit(1)
 		end
 	end
 	return files
