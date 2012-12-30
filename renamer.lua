@@ -17,6 +17,7 @@ function print_help()
 	print("\t           [-n|--numbering NAME NUMBERING][-d|--date DATE_FMT] [-D|--no-dashes] files [files ...]")
 end
 
+
 --- Extract flags from an arguments list.
 -- Given string arguments, extract flag arguments into a flags set.
 -- For example, given "foo", "--tux=beep", "--bla", "bar", "--baz",
@@ -189,9 +190,19 @@ function dateize(input)
 			os.exit(1)
 		end
 	else
-		-- nothing to do, yet
-		print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
-		os.exit(1)
+		if input <= 31 then
+			-- take the input as day of the month and build the date 
+			-- string from it
+			local m = os.date("%Y-%m")
+			date = m .. '-' .. input
+		elseif input > 31 then
+			-- take input as year and be it the date
+			date = input
+		else
+			-- nothing to do, yet
+			print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
+			os.exit(1)
+		end
 	end
 	-- check if the no-dashes cli options has been used
 	if _O.dashes == false then
