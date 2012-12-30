@@ -179,13 +179,16 @@ function dateize(input)
 		elseif input == "tomorrow" then
 			local date = os.date("%Y-%m-%d", os.time()+24*60*60)
 			return date
+		elseif string.match(input, "%d+%-%d+%-%d+") then
+			local date = input
+			return date
 		else
-			print("This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow'")
+			print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
 			os.exit(1)
 		end
 	else
 		-- nothing to do, yet
-		print("This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow'")
+		print([[This is not an accepted date string, please use only 'today' or 'yesterday' or 'tomorrow' or date as '2012-10-01']])
 		os.exit(1)
 	end
 end
