@@ -2,7 +2,7 @@
 
 ---
 -- @author Gianluca Fiore
--- @copyright 2012, Gianluca Fiore <forod.g@gmail.com>
+-- @copyright 2012-2013, Gianluca Fiore <forod.g@gmail.com>
 --
 
 ---Check that the length for the given type is exactly as it should
