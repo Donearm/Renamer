@@ -13,21 +13,21 @@ function print_help()
 	print([[Wrong arguments
 
 USAGE:
-	rename.lua [-h][-s|--substitute][-a|--append APPEND_STRING][-p|--prefix PREFIX_STRING]
-		[-r|--remove REMOVE_STRING][-m|--minimize][-t|--translate TRANSLATE_FROM TRANSLATE_TO]
-		[-n|--numbering NAME NUMBERING][-d|--date DATE_FMT][-D|--no-dashes] 
+	rename.lua [-h][-s|--substitute][-a|--append=APPEND_STRING][-p|--prefix=PREFIX_STRING]
+		[-r|--remove=REMOVE_STRING][-m|--minimize][-t|--translate=TRANSLATE_FROM,TRANSLATE_TO]
+		[-n|--numbering=NUMBERING,NAME][-d|--date=DATE_FMT][-D|--no-dashes] 
 		files|directory [files|directories ...]
 
 Arguments:
 	-h					this help
 	-s, --substitute			substitute spaces with underscores
-	-a, --append				append a string to filenames
-	-p, --prefix				prefix a string to filenames
-	-r, --remove <string>			remove <string> from filenames
+	-a, --append=<string>			append a string to filenames
+	-p, --prefix=<string>			prefix a string to filenames
+	-r, --remove=<string>			remove <string> from filenames
 	-m, --minimize				minimize extensions from filenames
-	-t, --translate <from> <to>		translate all <from> characters to <to> characters in filenames
-	-n, --numbering <name> <numbering>	rename all filenames as <name> with a progressive numeration starting at <numbering>
-	-d, --date				add a date to the beginning of filenames (use [today|yesterday|tomorrow|number])
+	-t, --translate=<from>,<to>		translate all <from> characters to <to> characters in filenames
+	-n, --numbering=<numbering>,<name>	rename all filenames as <name> with a progressive numeration starting at <numbering>
+	-d, --date=<date>			add a date to the beginning of filenames (use [today|yesterday|tomorrow|number])
 	-D, --no-dashes				strip dashes from dates. Only meaningful with -d, --date
 		]])
 end
@@ -76,6 +76,8 @@ function parse_flags(...)
 end
 
 function cli_parse(...)
+	-- this is probably too long/convoluted. I didn't want to use 
+	-- external libraries so WillFixThisLater™
 	local args = ...
 	local files = {}
 	for i = #args, 1, -1 do
@@ -93,18 +95,29 @@ function cli_parse(...)
 				local var, val = a:match("([a-z_%-]*)=(.*)")
 				if val then
 					_O.append_string = val
+				else
+					-- no flag=string pattern? Then -flag string
+					-- same thing in the others occurrences
+					_O.append_string = arg[i+1]
+					i = i +1
 				end
 			elseif a:match("^%-p") or a:match("^[-]+prefix") then
 				_O.prefix = true
 				local var, val = a:match("([a-z_%-]*)=(.*)")
 				if val then
 					_O.prefix_string = val
+				else
+					_O.prefix_string = arg[i+1]
+					i = i +1
 				end
 			elseif a:match("^%-r") or a:match("^[-]+remove") then
 				_O.remove = true
 				local var, val = a:match("([a-z_%-]*)=(.*)")
 				if val then
 					_O.remove_string = val
+				else
+					_O.remove_string = arg[i+1]
+					i = i +1
 				end
 			elseif a:match("^%-t") or a:match("^[-]+translate") then
 				_O.translate = true
@@ -112,8 +125,8 @@ function cli_parse(...)
 				if val_f and val_t then
 					_O.translate_from, _O.translate_to = val_f, val_t
 				else
-					print_help()
-					os.exit(1)
+					_O.translate_from, _O.translate_to = arg[i+1], arg[i+2]
+					i = i + 2
 				end
 			elseif a:match("^%-n") or a:match("^[-]+numbering") then
 				_O.numbering = true
@@ -140,14 +153,33 @@ function cli_parse(...)
 						_O.numbering_name = tostring(name)
 					end
 				else
-					print_help()
-					os.exit(1)
+					-- if -t string string pattern, try which string can 
+					-- be the index
+					if tonumber(arg[i+1]) then
+						_O.numbering_idx = arg[i+1]
+						_O.numbering_name = tostring(arg[i+2])
+						i = i + 2
+					elseif tonumber(arg[i+2]) then
+						_O.numbering_idx = arg[i+2]
+						_O.numbering_name = tostring(arg[i+1])
+						i = i + 2
+					else
+						-- if all else fails, first string is the index 
+						-- and the second the name.
+						-- Blame on you user for not reading the help
+						_O.numbering_idx = arg[i+1]
+						_O.numbering_name = tostring(arg[i+2])
+						i = i + 2
+					end
 				end
 			elseif a:match("^%-d") or a:match("^[-]+date") then
 				_O.date = true
 				local var, val = a:match("([a-z_%-]*)=(.*)")
 				if val then
 					_O.date_input = val
+				else
+					_O.date_input = arg[i+1]
+					i = i + 1
 				end
 			elseif a:match("^%-D") or a:match("^[-]+no[-]dashes") then
 				_O.dashes = false
