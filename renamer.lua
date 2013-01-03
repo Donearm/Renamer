@@ -90,16 +90,65 @@ function cli_parse(...)
 				_O.minimize = true
 			elseif a:match("^%-a") or a:match("^[-]+append") then
 				_O.append = true
+				local var, val = a:match("([a-z_%-]*)=(.*)")
+				if val then
+					_O.append_string = val
+				end
 			elseif a:match("^%-p") or a:match("^[-]+prefix") then
 				_O.prefix = true
+				local var, val = a:match("([a-z_%-]*)=(.*)")
+				if val then
+					_O.prefix_string = val
+				end
 			elseif a:match("^%-r") or a:match("^[-]+remove") then
 				_O.remove = true
+				local var, val = a:match("([a-z_%-]*)=(.*)")
+				if val then
+					_O.remove_string = val
+				end
 			elseif a:match("^%-t") or a:match("^[-]+translate") then
 				_O.translate = true
+				local var, val_f, val_t = a:match("([a-z_%-]*)=(.*),(.*)")
+				if val_f and val_t then
+					_O.translate_from, _O.translate_to = val_f, val_t
+				else
+					print_help()
+					os.exit(1)
+				end
 			elseif a:match("^%-n") or a:match("^[-]+numbering") then
 				_O.numbering = true
+				local var, idx, name = a:match("([a-z_%-]*)=(.*),(.*)")
+				if idx and name then
+					-- check which between idx and name is the number 
+					-- and which is the string. The user may bave 
+					-- inverted them
+					if type(idx) == "number" or type(tonumber(idx)) == "number" then
+						_O.numbering_idx = idx
+						_O.numbering_name = name
+					elseif type(idx) == "string" and type(tonumber(name)) == "number" then
+						_O.numbering_idx = name
+						_O.numbering_name = idx
+					else
+						if tonumber(idx) == nil then
+							-- impossible to have a number and a string, 
+							-- bailing out
+							print_help()
+							os.exit(1)
+						end
+						-- just try to have a number and a string
+						_O.numbering_idx = tonumber(idx)
+						_O.numbering_name = tostring(name)
+					end
+				else
+					print_help()
+					os.exit(1)
+				end
 			elseif a:match("^%-d") or a:match("^[-]+date") then
 				_O.date = true
+				local var, val = a:match("([a-z_%-]*)=(.*)")
+				if val then
+					_O.date_input = val
+				end
 			elseif a:match("^%-D") or a:match("^[-]+no[-]dashes") then
 				_O.dashes = false
 			else
@@ -179,7 +228,6 @@ function filelist(...)
 	local path = ...
 	local files = {}
 	for _,e in pairs(path) do
-		::continue::
 		if lfs.attributes(e, "mode") == "file" then
 			table.insert(files, e)
 		elseif lfs.attributes(e, "mode") == "directory" then
@@ -194,8 +242,10 @@ function filelist(...)
 			end
 		else
 			-- neither a file nor a directory? Skip it
-			goto continue
+--			goto continue
+			
 		end
+		::continue::
 	end
 	return files
 end
