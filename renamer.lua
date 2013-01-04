@@ -69,8 +69,8 @@ function cli_parse(...)
 				if val then
 					_O.append_string = val
 				else
-					-- no flag=string pattern? Then -flag string
-					-- same thing in the others occurrences
+					-- no flag=string pattern? Then assume -flag string 
+					-- pattern. Same thing in the others occurrences
 					_O.append_string = arg[i+1]
 					i = i +1
 				end
