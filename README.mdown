@@ -2,9 +2,11 @@ Purpose of the program
 ======================
 
 Renamer.py is a script to rename files on the command-line, inspired by 
-bulk-rename from Thunar but being cli doesn't require any DE/WM.
-Adding a gui it's planned though.
-Renamer.py it's also python3 ready.
+bulk-rename from Thunar but doesn't require any libraries but for standard Python ones.
+Renamer.py is also python3 ready.
+
+There's also a Lua version, renamer.lua, that only depends on [Lua Filesystem](http://keplerproject.github.com/luafilesystem/)
+to work. Features are the same as for the Python version, only options are slightly different. See below.
 
 Use
 ===
@@ -17,10 +19,22 @@ They are:
 * **-a/--append**		append a string to the end of filenames. Particularly useful for files lacking an extenxion.
 * **-p/--prefix**		prefix a string to filenames.
 * **-r/--remove**		completely remove a string in filenames.
-* **-m/--minimize**		make the extension all lowercase.
+* **-m/--minimize**		make the extensions all lowercase.
 * **-t/--translate**	translate a serie of characters with another.
-* **-n/--numbering**	rename the totality of the filenames adding an incrementing numeration.
+* **-n/--numbering**	rename filenames with a new name and adding an incrementing numeration (as "name001.ext, name002.ext" etc.).
 * **-d/--date**			add a date to filenames.
+
+Renamer.lua has these set of options:
+
+* **-s/--no-spaces**	substitute spaces in files with underscores.
+* **-a/--append=<string>**	append a string to the end of filenames.
+* **-p/--prefix=<string>**	prefix a string to filenames.
+* **-r/--remove=<string>**	remove a string from filenames.
+* **-m/--minimize**		make the extensions all lowercase.
+* **-t/--translate=<from>,<to>**	translate a serie of characters with another.
+* **-n/--numbering=<numbering>,<name>**		rename filenames with <name> and an incrementing numeration (as "name001.ext, name002.ext" etc.).
+* **-d/--date=<date>**	add a date to filenames. Use [today|yesterday|tomorrow|number]
+* **-D/--no-dashes**	strip dashes from dates. Only meaningful with **-d, --date**.
 
 License
 ======
