@@ -72,7 +72,7 @@ function cli_parse(...)
 					-- no flag=string pattern? Then assume -flag string 
 					-- pattern. Same thing in the others occurrences
 					_O.append_string = arg[i+1]
-					i = i +1
+					i = i + 1
 				end
 			elseif a:match("^%-p") or a:match("^[-]+prefix") then
 				_O.prefix = true
@@ -81,7 +81,7 @@ function cli_parse(...)
 					_O.prefix_string = val
 				else
 					_O.prefix_string = arg[i+1]
-					i = i +1
+					i = i + 1
 				end
 			elseif a:match("^%-r") or a:match("^[-]+remove") then
 				_O.remove = true
@@ -90,7 +90,7 @@ function cli_parse(...)
 					_O.remove_string = val
 				else
 					_O.remove_string = arg[i+1]
-					i = i +1
+					i = i + 1
 				end
 			elseif a:match("^%-t") or a:match("^[-]+translate") then
 				_O.translate = true
@@ -160,11 +160,10 @@ function cli_parse(...)
 				print_help()
 				os.exit(1)
 			end
-		elseif a:match("^([^-][%w_%p]+)") then
+		elseif a:match("^([^-][%w_%p]*)") then
 			table.insert(files, a)
 		else
 			print_help()
-			os.exit(1)
 		end
 	end
 	return files
@@ -385,10 +384,10 @@ end
 ---Rename files with a fixed name and a numbering starting at a given 
 --integer
 --@param filenames the files
---@param name the string for the new filename
 --@param start the integer from which to start the numbering
-function idx_numbering(filenames, name, start)
-	local idx = start
+--@param name the string for the new filename
+function idx_numbering(filenames, start, name)
+	local idx = tonumber(start)
 	for _, f in pairs(filenames) do
 		local root = dirname(f)
 		local oldname, ext = get_extension(f)
@@ -423,6 +422,27 @@ end
 function main()
 	local f = cli_parse(arg)
 	local fil = filelist(f)
+	-- let's see what to do
+	if _O.substitute then
+		sub_spaces(fil)
+	elseif _O.minimize then
+		minimize_ext(fil)
+	elseif _O.append then
+		append_str(fil, _O.append_string)
+	elseif _O.prefix then
+		prefix_str(fil, _O.prefix_string)
+	elseif _O.remove then
+		remove_str(fil, _O.remove_string)
+	elseif _O.translate then
+		translate_chars(fil, _O.translate_from, _O.translate_to)
+	elseif _O.numbering then
+		idx_numbering(fil, _O.numbering_idx, _O.numbering_name)
+	elseif _O.date then
+		prepend_date(fil, _O.date_input)
+	else
+		print_help()
+		os.exit(1)
+	end
 end
 
 main()
