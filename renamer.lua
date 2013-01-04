@@ -48,33 +48,6 @@ all dates will be in the "yyyy-mm-dd" format unless the -D or --no-dashes option
 end
 
 
---- Extract flags from an arguments list.
--- Given string arguments, extract flag arguments into a flags set.
--- For example, given "foo", "--tux=beep", "--bla", "bar", "--baz",
--- it would return the following:
--- {["bla"] = true, ["tux"] = "beep", ["baz"] = true}, "foo", "bar".
---
--- taken from 
--- http://snippets.luacode.org/snippets/Parsing_Command-line_arguments_9
-function parse_flags(...)
-	local args = {...}
-	local flags = {}
-	for i = #args, 1, -1 do
-		local flag = args[i]:match("^%-%-(.*)")
-		if flag then
-			local var,val = flag:match("(a-z_%-]*)=(.*)")
-			if val then
-				flags[var] = val
-			else
-				flags[flag] = true
-			end
-			table.remove(args, i)
-		end
-	end
---	return flags, unpack(args)
-	return flags, args
-end
-
 function cli_parse(...)
 	-- this is probably too long/convoluted. I didn't want to use 
 	-- external libraries so WillFixThisLater™
