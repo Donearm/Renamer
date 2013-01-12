@@ -25,9 +25,8 @@ import argparse
 from PyQt4 import QtGui, QtCore
 
 
-
-
 def argument_parser():
+
     argparser = argparse.ArgumentParser()
     argparser.add_argument("-s", "--no-spaces",
             help="substitute spaces",
@@ -95,6 +94,7 @@ def cbk_translate(option, opt_str, value, parser):
         del parser.rargs[:len(value)]
         setattr(parser.values, option.dest, value)
 
+
 def check_length(typ, length):
     """Check that the length for the given type is exactly as it should 
     (length)"""
@@ -103,6 +103,7 @@ def check_length(typ, length):
     else:
         return True
 
+
 def ispath(path):
     """Exit if path is not a correct path"""
     if os.path.isdir(path):
@@ -110,6 +111,7 @@ def ispath(path):
     else:
         sys.stderr.write("You must give a valid path")
         sys.exit(1)
+
 
 def filelist(*args):
     """Given or a valid path or a number of files (or both), return a list
@@ -135,11 +137,13 @@ def filelist(*args):
         #fll = [fille for fille in os.listdir(path) if os.path.isfile(os.path.join(root, files))]
     return filenames
 
+
 def sub_spaces(filenames):
     """Substitute all spaces in filenames with underscores"""
     for files in filenames:
         newname = re.sub(' ', '_', files)
         os.rename(files, newname)
+
 
 def append_str(filenames, s):
     """Append given string to the end of all filenames"""
@@ -149,6 +153,7 @@ def append_str(filenames, s):
         newname = root + '/' + oldname + s
         os.rename(files, newname)
 
+
 def prefix_str(filenames, s):
     """Prefix all filenames with the given string"""
     for files in filenames:
@@ -156,6 +161,7 @@ def prefix_str(filenames, s):
         oldname = os.path.basename(files)
         newname = root + '/' + s + oldname
         os.rename(files, newname)
+
 
 def remove_str(filenames, s):
     """Remove a given string from all filenames"""
@@ -175,11 +181,13 @@ def remove_str(filenames, s):
             # characters in filename. Skip that file
             continue
 
+
 def minimize_ext(filenames):
     """Minimize all file extensions of given files"""
     for files in filenames:
         name, ext = os.path.splitext(files)
         os.rename(files, name + ext.lower())
+
 
 def translate_chars(filenames, char_f, char_t):
     """Translate every given characters in filenames to another character"""
@@ -212,6 +220,7 @@ def idx_numbering(filenames, name, int_start):
         n += 1
         os.rename(files, newname)
 
+
 def prepend_date(filenames, date_fmt):
     """Prepend each files with the current date"""
     today = datetime.date.today()
@@ -227,10 +236,8 @@ class RenamerWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
 
-
         self.setGeometry(300, 300, 450, 350)
         self.setWindowTitle('Renamer')
-
 
         exit_icon = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
         exit_icon.setShortcut('Ctrl+Q')
@@ -250,16 +257,9 @@ class RenamerWindow(QtGui.QMainWindow):
         self.options_menu.addAction(exit_icon)
 
 
-
-
-
-
-
-
-
 def main():
-    options = argument_parser()
 
+    options = argument_parser()
     # do we want a gui?
     if options.gui_enable:
         app = QtGui.QApplication(sys.argv)
@@ -268,7 +268,6 @@ def main():
         w.show()
         app.exec_()
         return
-
 
     # get all the filenames
     filenames = filelist(options.files)
@@ -293,7 +292,6 @@ def main():
     else:
         print("What do you exactly want to do?")
 
-        
 
 if __name__ == '__main__':
     status = main()
