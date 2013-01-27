@@ -22,7 +22,6 @@ import re
 import sys
 import datetime
 import argparse
-from PyQt4 import QtGui, QtCore
 
 
 def argument_parser():
@@ -62,7 +61,7 @@ def argument_parser():
             action="store",
             type=str,
             dest="numbering",
-            nargs=2)
+            nargs=2) 
     argparser.add_argument("-d", "--date",
             help="Prepend date to files",
             action="store",
@@ -72,6 +71,10 @@ def argument_parser():
             help="Start the GUI",
             action="store_true",
             dest="gui_enable")
+    argparser.add_argument("-D", "--no-dashes",
+            help="Remove dashes in dates",
+            action="store_true",
+            dest="dashes")
     argparser.add_argument(action="store",
             help="Files",
             dest="files",
@@ -221,9 +224,14 @@ def idx_numbering(filenames, name, int_start):
         os.rename(files, newname)
 
 
-def prepend_date(filenames, date_fmt):
+def prepend_date(filenames, date_fmt, dashes):
     """Prepend each files with the current date"""
     today = datetime.date.today()
+    if dashes:
+        # we don't want dashes in dates if dashes argument is true
+        date_fmt = date_fmt.replace('-', '')
+    else:
+        pass
     print("If you want to use a date different from today's, append it directly as a string")
     for files in filenames:
         root = os.path.dirname(files)
@@ -232,29 +240,29 @@ def prepend_date(filenames, date_fmt):
         os.rename(files, newname)
 
 
-class RenamerWindow(QtGui.QMainWindow):
-    def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
-
-        self.setGeometry(300, 300, 450, 350)
-        self.setWindowTitle('Renamer')
-
-        exit_icon = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
-        exit_icon.setShortcut('Ctrl+Q')
-
-        preferences = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/categories/preferences-other.png'), 'Preferences', self)
-        preferences.setShortcut('Ctrl+P')
-
-        filedialog = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/fileopen.png'), 'Open File', self)
-        filedialog.setText('Open File')
-        self.connect(filedialog, QtCore.SIGNAL('activated()'), QtCore.SLOT(QtGui.QFileDialog.getOpenFileName("", "*.py", self, "FileDialog")))
-
-        self.connect(exit_icon, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
-
-        self.menubar = self.menuBar()
-        self.options_menu = menubar.addMenu('&Options')
-        self.options_menu.addAction(preferences)
-        self.options_menu.addAction(exit_icon)
+#class RenamerWindow(QtGui.QMainWindow):
+#    def __init__(self, parent=None):
+#        QtGui.QWidget.__init__(self, parent)
+#
+#        self.setGeometry(300, 300, 450, 350)
+#        self.setWindowTitle('Renamer')
+#
+#        exit_icon = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
+#        exit_icon.setShortcut('Ctrl+Q')
+#
+#        preferences = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/categories/preferences-other.png'), 'Preferences', self)
+#        preferences.setShortcut('Ctrl+P')
+#
+#        filedialog = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/fileopen.png'), 'Open File', self)
+#        filedialog.setText('Open File')
+#        self.connect(filedialog, QtCore.SIGNAL('activated()'), QtCore.SLOT(QtGui.QFileDialog.getOpenFileName("", "*.py", self, "FileDialog")))
+#
+#        self.connect(exit_icon, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+#
+#        self.menubar = self.menuBar()
+#        self.options_menu = menubar.addMenu('&Options')
+#        self.options_menu.addAction(preferences)
+#        self.options_menu.addAction(exit_icon)
 
 
 def main():
@@ -288,7 +296,7 @@ def main():
         check_length(options.numbering, 2)
         idx_numbering(filenames, options.numbering[0], options.numbering[1])
     elif options.date_fmt:
-        prepend_date(filenames, options.date_fmt)
+        prepend_date(filenames, options.date_fmt, options.dashes)
     else:
         print("What do you exactly want to do?")
 

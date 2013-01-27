@@ -23,6 +23,7 @@ They are:
 * **-t/--translate**	translate a serie of characters with another.
 * **-n/--numbering**	rename filenames with a new name and adding an incrementing numeration (as "name001.ext, name002.ext" etc.).
 * **-d/--date**			add a date to filenames.
+* **-D/--no-dashes**	strip dashes from dates. Only meaningful with **-d, --date+**.
 
 Renamer.lua has these set of options:
 
