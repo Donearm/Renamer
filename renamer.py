@@ -67,10 +67,6 @@ def argument_parser():
             action="store",
             type=str,
             dest="date_fmt")
-    argparser.add_argument("-g", "--gui",
-            help="Start the GUI",
-            action="store_true",
-            dest="gui_enable")
     argparser.add_argument("-D", "--no-dashes",
             help="Remove dashes in dates",
             action="store_true",
@@ -227,11 +223,16 @@ def idx_numbering(filenames, name, int_start):
 def prepend_date(filenames, date_fmt, dashes):
     """Prepend each files with the current date"""
     today = datetime.date.today()
-    if dashes:
-        # we don't want dashes in dates if dashes argument is true
-        date_fmt = date_fmt.replace('-', '')
+    if date_fmt == "today":
+        date_fmt = today
     else:
-        pass
+        if dashes:
+            # we don't want dashes in dates if dashes argument is true
+            date_fmt = date_fmt.replace('-', '')
+        else:
+            pass
+    print(date_fmt)
+    print(today)
     print("If you want to use a date different from today's, append it directly as a string")
     for files in filenames:
         root = os.path.dirname(files)
@@ -240,42 +241,10 @@ def prepend_date(filenames, date_fmt, dashes):
         os.rename(files, newname)
 
 
-#class RenamerWindow(QtGui.QMainWindow):
-#    def __init__(self, parent=None):
-#        QtGui.QWidget.__init__(self, parent)
-#
-#        self.setGeometry(300, 300, 450, 350)
-#        self.setWindowTitle('Renamer')
-#
-#        exit_icon = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/exit.png'), 'Exit', self)
-#        exit_icon.setShortcut('Ctrl+Q')
-#
-#        preferences = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/categories/preferences-other.png'), 'Preferences', self)
-#        preferences.setShortcut('Ctrl+P')
-#
-#        filedialog = QtGui.QAction(QtGui.QIcon('/usr/share/icons/gnome/24x24/actions/fileopen.png'), 'Open File', self)
-#        filedialog.setText('Open File')
-#        self.connect(filedialog, QtCore.SIGNAL('activated()'), QtCore.SLOT(QtGui.QFileDialog.getOpenFileName("", "*.py", self, "FileDialog")))
-#
-#        self.connect(exit_icon, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
-#
-#        self.menubar = self.menuBar()
-#        self.options_menu = menubar.addMenu('&Options')
-#        self.options_menu.addAction(preferences)
-#        self.options_menu.addAction(exit_icon)
-
-
 def main():
 
     options = argument_parser()
-    # do we want a gui?
-    if options.gui_enable:
-        app = QtGui.QApplication(sys.argv)
-
-        w = RenamerWindow()
-        w.show()
-        app.exec_()
-        return
+    print(options.files)
 
     # get all the filenames
     filenames = filelist(options.files)
