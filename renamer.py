@@ -67,7 +67,7 @@ def argument_parser():
             action="store",
             type=str,
             dest="date_fmt",
-            nargs="?")
+            nargs=1)
     argparser.add_argument("-D", "--no-dashes",
             help="Remove dashes in dates",
             action="store_true",
