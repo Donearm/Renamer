@@ -66,7 +66,8 @@ def argument_parser():
             help="Prepend date to files",
             action="store",
             type=str,
-            dest="date_fmt")
+            dest="date_fmt",
+            nargs="?")
     argparser.add_argument("-D", "--no-dashes",
             help="Remove dashes in dates",
             action="store_true",
@@ -224,15 +225,10 @@ def prepend_date(filenames, date_fmt, dashes):
     """Prepend each files with the current date"""
     today = datetime.date.today()
     if date_fmt == "today":
-        date_fmt = today
-    else:
-        if dashes:
-            # we don't want dashes in dates if dashes argument is true
-            date_fmt = date_fmt.replace('-', '')
-        else:
-            pass
-    print(date_fmt)
-    print(today)
+        date_fmt = "%Y-%m-%d"
+    if dashes:
+        # we don't want dashes in dates if dashes argument is true
+        date_fmt = date_fmt.replace('-', '')
     print("If you want to use a date different from today's, append it directly as a string")
     for files in filenames:
         root = os.path.dirname(files)
@@ -244,7 +240,6 @@ def prepend_date(filenames, date_fmt, dashes):
 def main():
 
     options = argument_parser()
-    print(options.files)
 
     # get all the filenames
     filenames = filelist(options.files)
