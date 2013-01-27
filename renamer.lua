@@ -126,7 +126,7 @@ function cli_parse(...)
 						_O.numbering_name = tostring(name)
 					end
 				else
-					-- if -t string string pattern, try which string can 
+					-- if -n string string pattern, try which string can 
 					-- be the index
 					if tonumber(arg[i+1]) then
 						_O.numbering_idx = arg[i+1]
