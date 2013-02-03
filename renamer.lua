@@ -201,12 +201,12 @@ end
 function get_extension(str)
 	-- let's check whether the filename seems to have an extension or
 	-- not
-	if string.match(str, "(.-/)(.-)([.].*)$") then
-		local name = string.gsub(str, "(.-/)(.-)([.].*)$", "%1%2")
-		local ext = string.gsub(str, "(.-/)(.-)([.].*)$", "%3")
+	if string.match(str, "(.-/?)(.-)([.].*)$") then
+		local name = string.gsub(str, "(.-/?)(.-)([.].*)$", "%1%2")
+		local ext = string.gsub(str, "(.-/?)(.-)([.].*)$", "%3")
 		return name, ext
 	else
-		local name = string.gsub(str, "(.-/)(.-)([.].*)$", "%1%2")
+		local name = string.gsub(str, "(.-/?)(.-)$", "%1%2")
 		return name, ext
 	end
 end
