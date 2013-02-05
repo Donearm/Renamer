@@ -191,8 +191,12 @@ end
 ---Extract only the directory name from a path string
 --@param str the path
 function dirname(str)
-	local name = string.gsub(str, "(.*/)(.*)", "%1")
-	return name
+	if str:match(".-/.-") then
+		local name = string.gsub(str, "(.*/)(.*)", "%1")
+		return name
+	else
+		return ''
+	end
 end
 
 ---Extract only the file extension from a path string. Returns the full
