@@ -211,7 +211,7 @@ function get_extension(str)
 		return name, ext
 	else
 		local name = string.gsub(str, "(.-/?)(.-)$", "%1%2")
-		return name, ext
+		return name, ''
 	end
 end
 
